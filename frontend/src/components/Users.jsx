@@ -1,4 +1,5 @@
 import axios from "axios";
+import API from "../api";
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,8 @@ export const Users = ()=>{
     const [users, setUsers]= useState([]);
     const [filter, setFilter]= useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError]= useState("")
+    const [error, setError]= useState("");
+    
 
  useEffect(() => {
     console.log("Fetching users with filter:", filter);
@@ -17,15 +19,9 @@ export const Users = ()=>{
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `http://localhost:3000/api/v1/bulk?filter=${filter}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+      const response = await API.get(
+        `/bulk?filter=${filter}`
       );
       console.log("Response:", response.data);
 
