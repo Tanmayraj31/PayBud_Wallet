@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Appbar } from "../components/Appbar"
 import { Balance } from "../components/Balance"
-import { Users } from "../components/Users.JSX"
+import { Users } from "../components/Users.jsx"
 import axios from "axios"
 import API from "../api"
 
