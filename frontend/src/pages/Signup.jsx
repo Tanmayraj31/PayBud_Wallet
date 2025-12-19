@@ -4,7 +4,7 @@ import { InputBox } from "../components/InputBox"
 import {Subheading} from "../components/Subheading"
 import { Button } from "../components/Button"
 import { Warning } from "../components/Warning"
-import axios from "axios"
+import API from "../api"
 import { useNavigate } from "react-router-dom"
 
 export const Signup = ()=>{
@@ -15,7 +15,7 @@ const[username, setUserName]= useState("");
 const[password, setPassword]= useState("");
 const navigate = useNavigate();
 const handleSignup = async()=>{
-   const response = await axios.post("http://localhost:3000/api/v1/signup",{
+   const response = await API.post("/signup",{
             username,
             password,
             firstName,

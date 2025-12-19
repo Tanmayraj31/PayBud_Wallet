@@ -3,6 +3,7 @@ import { Appbar } from "../components/Appbar"
 import { Balance } from "../components/Balance"
 import { Users } from "../components/Users.JSX"
 import axios from "axios"
+import API from "../api"
 
 
 
@@ -15,15 +16,10 @@ export const Dashboard = ()=>{
     useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const token = localStorage.getItem("token");
+        
 
-        const response = await axios.get(
-          "http://localhost:3000/api/v1/account/balance",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+        const response = await API.get(
+          "/account/balance"
         );
 
         setBalance(response.data.bal);

@@ -3,7 +3,6 @@ const Account = require("../models/accountModel");
 const { default: mongoose } = require("mongoose");
 
 exports.balance = async(req,res)=>{
-    console.log("Hello from account", req.user);
     const account = await Account.findOne({userId:req.user.id});
 
     res.json({

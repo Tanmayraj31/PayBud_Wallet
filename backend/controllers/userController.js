@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const Account = require("../models/accountModel");
 const jwt = require("jsonwebtoken");
 const zod = require("zod");
+const bcrypt = require("bcrypt");
 
 
 const signupSchema = zod.object({
@@ -27,11 +28,11 @@ exports.signup = async (req, res)=>{
        return res.json({msg: " user already exixts"})
     };
 
-
-    const user = await User.create({username, password, firstName,lastName})
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await User.create({username, password:hashed, firstName,lastName})
 
     //const userid = user._id;
-    const account = await Account.create({userId:user._id, balance:1+Math.random()*10000 });
+    const account = await Account.create({userId:user._id, balance:Number(10000) });
 
     
     const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
@@ -49,7 +50,9 @@ exports.signin = async(req,res)=>{
         res.status(404).json({msg:"User not found"})
     };
 
-    if(password !== user.password){
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if(!isMatch){
         return res.status(401).json(({msg:"invalid password"}))
     };
 

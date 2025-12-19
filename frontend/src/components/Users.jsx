@@ -66,29 +66,36 @@ export const Users = ()=>{
 }
 
 
-function User({user}){
-    const navigate = useNavigate();
+function User({ user }) {
+  const navigate = useNavigate();
 
-    return <div className="flex justify-between">
-        <div className="ml-15 pl-10 flex">
-            <div className="rounded-full h-12 mt-3 w-12 bg-slate-200 flex justify-center  mr-2 items-center">
-                <div className="flex flex-col justify-center h-full text-xl  ">
-                    {user.firstName?.[0] || "?"}
-                </div>
-            </div>
-            <div className="flex  justify-center items-center">
-                <div className="">
-                    {user.firstName} {user.lastName}
-                </div>
-            </div>
+  return (
+    <div className="flex justify-between items-center w-full">
+      
+      <div className="ml-3 pl-2 sm:ml-15 sm:pl-10 flex items-center">
+        <div className="rounded-full h-12 mt-2 w-12 bg-slate-200 flex justify-center mr-2 items-center">
+          <div className="flex flex-col justify-center h-full text-xl ">
+            {user.firstName?.[0] || "?"}
+          </div>
         </div>
-        <div className="w-1/3 flex flex-col justify-center items-end mr-10 pl-10">
-            <Button onClick={(e)=>{
-                navigate(`/send?id=${user._id}&name=${user.firstName}`);
 
-            }} label={"Send Money"}/>
+        <div className="flex justify-center items-center mt-2">
+          <div>
+            {user.firstName} {user.lastName}
+          </div>
         </div>
+      </div>
+
+      <div className="flex items-center  justify-between pl-10 sm:w-1/3 sm:mr-10 sm:justify-end ">
+        <Button
+        className="w-full sm:w-auto sm:mr-15"
+          onClick={() => {
+            navigate(`/send?id=${user._id}&name=${user.firstName}`);
+          }}
+          label={"Send Money"}
+        />
+      </div>
+
     </div>
-
-    
+  );
 }

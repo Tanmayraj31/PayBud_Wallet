@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = require("../config")
+
 
 exports.auth = (req,res,next)=>{
     
@@ -11,9 +11,8 @@ exports.auth = (req,res,next)=>{
 
 
     try{
-        const decode = jwt.verify(token, JWT_SECRET);
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decode;
-        console.log("req user=", req.user)
         next();
     }catch(error){
         console.log(error)
