@@ -10,17 +10,24 @@ import API from "../api"
 export const Signin = ()=>{
 const [username, setUserName]=useState("");
 const [password, setPassword]= useState("");
+const [error, setError] = useState("");
+const [errorCount, setErrorCount]=useState(0);
 
 const navigate = useNavigate();
 
 const handleSignin = async()=>{
-    const response = await API.post("/signin",{
+    try{
+        const response = await API.post("/signin",{
         username,
         password
     })
      localStorage.setItem("token", response.data.token);
      localStorage.setItem("user",JSON.stringify(response.data.user));
      navigate("/dashboard") 
+    }catch(err){
+        setError(err.response?.data?.msg  || "Something went wrong");
+        setErrorCount((prev)=> prev+1)
+    }
 }
 
 
@@ -33,6 +40,12 @@ const handleSignin = async()=>{
             <Subheading label={"Enter details to login"}/>
             <InputBox placeholder={"username"} label={"Email"} onChange={(e)=>{setUserName(e.target.value)}}  />
             <InputBox placeholder={"password"} type={"password"} label={"Password"} onChange={(e)=>{setPassword(e.target.value)}} />
+            {error && (
+             <div 
+             key={errorCount}
+             className="text-red-500 text-sm mt-2 animate-shake">
+             {error}</div>
+)}
             <Button label={"Signin"} onClick={handleSignin} />
             <Warning label={"Don't have an account?"} buttonText={"SignUp"} to={"/signup"} />
         </div>

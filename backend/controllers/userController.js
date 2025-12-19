@@ -20,12 +20,17 @@ const updateSchema = zod.object({
 
 
 exports.signup = async (req, res)=>{
-    const validateData = signupSchema.parse(req.body);
-    const{username, password, firstName, lastName} = validateData;
+    const validateData = signupSchema.safeParse(req.body);
+    if(!validateData.success){
+        return res.status(400).json({
+            errors: validateData.error.errors
+        })
+    }
+    const{username, password, firstName, lastName} = validateData.data;
 
     const exixtingUser = await User.findOne({username});
     if(exixtingUser){
-       return res.json({msg: " user already exixts"})
+       return res.status(409).json({msg: " user already exixts"})
     };
 
     const hashed = await bcrypt.hash(password, 10);
@@ -36,7 +41,9 @@ exports.signup = async (req, res)=>{
 
     
     const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
-    res.status(200).json({msg:"User created successfully", token})
+    res.status(200).json({msg:"User created successfully", token, user:{
+        firstName:user.firstName
+    } })
 
    
 }
@@ -47,7 +54,7 @@ exports.signin = async(req,res)=>{
     const user = await User.findOne({username});
 
     if(!user){
-        res.status(404).json({msg:"User not found"})
+        return res.status(404).json({msg:"User not found"})
     };
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -57,7 +64,7 @@ exports.signin = async(req,res)=>{
     };
 
     const token = jwt.sign({id:user._id}, process.env.JWT_SECRET);
-    res.status(200).json({msg:"Login Succesfull!", token, user:{
+    res.status(200).json({msg:"Login Succesfull!",token, user:{
         firstName: user.firstName
     }})
 

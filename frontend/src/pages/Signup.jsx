@@ -12,18 +12,36 @@ export const Signup = ()=>{
 const [firstName, setFirstName] = useState("");
 const[lastName, setLastName] = useState("");
 const[username, setUserName]= useState("");
-const[password, setPassword]= useState("");
+const[password, setPassword]= useState([]);
+const [error, setError] = useState("");
+const [errorCount, setErrorCount]=useState(0);
 const navigate = useNavigate();
 const handleSignup = async()=>{
-   const response = await API.post("/signup",{
+   try{
+    const response = await API.post("/signup",{
             username,
             password,
             firstName,
             lastName
       }
     );
-    localStorage.setItem("token", response.data.token)     
-    navigate("/dashboard")      
+    localStorage.setItem("token", response.data.token); 
+     localStorage.setItem(
+      "user",
+      JSON.stringify(response.data.user)
+    ); 
+    navigate("/dashboard")     
+
+    
+   }catch(err){
+      const errors = err.response?.data?.errors;
+        if (errors?.length) {
+    setError(errors[0].message); // 👈 first error only
+        } else {
+          setError("Something went wrong");
+          }
+          setErrorCount((prev)=> prev+1)
+   }
 }
 
 
@@ -37,7 +55,13 @@ const handleSignup = async()=>{
                 <InputBox onChange={(e)=>{setFirstName(e.target.value);}} placeholder={"John"} label={"First Name"} />
                 <InputBox onChange={(e)=>{setLastName(e.target.value)}} placeholder={"Doe"} label={"Last Name"} />
                 <InputBox onChange={(e)=>{setUserName(e.target.value);}} placeholder={"example@gmail.com"} label={"Email"}/>
-                <InputBox onChange={(e)=>{setPassword(e.target.value)}} placeholder={"password"} label={"Password"}/>
+                <InputBox onChange={(e)=>{setPassword(e.target.value)}} type="password" placeholder={"password"} label={"Password"}/>
+                {error && (
+             <div 
+             key={errorCount}
+             className="text-red-500 text-sm mt-2 animate-shake">
+             {error}</div>
+)}
                 <Button onClick={handleSignup} label={"Submit"}/>
                 <Warning label={"Already have an account?"} buttonText={"Signin"} to={"/signin"} />
             </div>
